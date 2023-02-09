@@ -1,12 +1,14 @@
 /*                   CURSO SQL                     */
 /*    PROYECTO: ALQUILER ONLINE DE INMUEBLES       */
--- Descripción: Base de datos para alquilar inmuebles de forma online
-
+-- Descripción: Base de datos para alquilar alojamientos de forma online
+-- ----------------------------------------------------
 /*          CREACIÓN DE BASE DE DATOS              */
+-- -----------------------------------------------------
 create schema if not exists alquileres;
 use alquileres;
-
-/*              CREACIÓN DE TABLAS                 */
+-- -------------------------------------------------------------------------------------------------------------------------
+/*                                           CREACIÓN DE TABLAS                                                          */
+-- -------------------------------------------------------------------------------------------------------------------------
 -- TABLAS DIMENSIONALES:
 	-- 1) Tabla Paises: Contiene información de paises, codigos de telefonos de pais.
 	-- 2) Tabla Estados: Contiene información de estados o provincias, codigos de telefonos.
@@ -83,6 +85,7 @@ create table personas(
  );
 create table alojamientos(
 id_alojamiento int not null auto_increment primary key,
+nombre varchar(50),
 dormitorios int not null,
 baños int not null,
 pais int not null, -- Llave foranea que relaciona al alojamiento con el pais donde se encuentra
@@ -130,8 +133,9 @@ importe int not null,
 fec_trans datetime not null,
 foreign key (medio) references medios(id_medio)
 );
-
-/*                    INSERCIÓN DE DATOS                    */
+-- ------------------------------------------------------------------------------------------------------------------------------------
+/*                                              INSERCIÓN DE DATOS                                                                  */
+-- ------------------------------------------------------------------------------------------------------------------------------------
 -- CON IMPORTACIÓN DE ARCHIVO CSV
 	-- 1) Tabla Paises
 -- CON SCRIPTS
@@ -235,12 +239,12 @@ values
 (null,'Shannon','Raven','(720) 418-4833',14256325,'1986-12-07','raven.shannon@gmail.com',64,3,3,2),
 (null,'Andino','Marta','(54) 261-365785',10365987,'1952-09-08','andino.mar@gmail.com',11,1,1,1);
 -- 11) Tabla Alojamientos
-insert into alojamientos (id_alojamiento,dormitorios,baños,pais,estado,localidad,tipo_alojamiento,tipo_propiedad,servicios,actividades,caracteristicas)
+insert into alojamientos (id_alojamiento,nombre,dormitorios,baños,pais,estado,localidad,tipo_alojamiento,tipo_propiedad,servicios,actividades,caracteristicas)
 values
-(null,1,1,64,3,3,1,3,1,4,2),
-(null,3,2,30,5,5,2,6,2,2,1),
-(null,2,1,11,1,1,1,4,3,3,2),
-(null,1,1,64,3,3,3,3,2,4,2);
+(null,'Los Amigos',1,1,64,3,3,1,3,1,4,2),
+(null,'El Descanso',3,2,30,5,5,2,6,2,2,1),
+(null,'Royal Home',2,1,11,1,1,1,4,3,3,2),
+(null,'Amaneceres',1,1,64,3,3,3,3,2,4,2);
 -- 12) Tabla Reservas
 insert into reservas (id_reserva,persona,alojamiento,checkin,checkout)
 values
@@ -256,8 +260,69 @@ values
 -- 14) Tabla Transacciones
 insert into transacciones (id_transaccion,medio,importe,fec_trans)
 values
-(null,64,1000,'2023-02-06'),
-(null,66,2000,'2023-01-01'),
-(null,67,1800,'2023-01-25'),
-(null,65,1600,'2023-01-05');
+(null,1,1000,'2023-02-06'),
+(null,2,2000,'2023-01-01'),
+(null,3,1800,'2023-01-25'),
+(null,4,1600,'2023-01-05');
+-- -------------------------------------------------------------------------------------------------------------------------------------
+/*                                                      CREACIÓN DE VISTAS                                                           */ 
+-- -------------------------------------------------------------------------------------------------------------------------------------
+-- 1) PERSONAS REGISTRADAS QUE VIVEN EN ARGENTINA
+create view paises_de_procedencia_personas as
+select 
+T1.nombre,
+T1.apellido,
+T2.pais
+from
+personas T1
+inner join paises T2
+on T1.pais=T2.id_pais
 
+-- 2) DATOS DE CONTACTO DE PERSONAS CON RESERVAS 
+create view contacto_personas_con_reserva as
+select
+T2.nombre,
+T2.apellido,
+T2.telefono,
+T2.email
+from reservas T1
+inner join personas T2
+on T1.persona = T2.id_persona;
+
+-- 3) GASTO Y ALOJAMIENTO DE PERSONAS CON RESERVAS
+create view gasto_alojamiento_por_persona as
+select
+T3.nombre,
+T3.apellido,
+T4.alojamiento,
+T2.importe
+from
+medios T1
+inner join transacciones T2
+on T1.id_medio=T2.medio
+inner join personas T3
+on T1.persona=T3.id_persona
+inner join reservas T4
+on T3.id_persona=T4.persona;
+
+-- 4) ACTIVIDADES Y CARACTERISTICAS POR ALOJAMIENTO
+create view actividades_y_caracteristicas_por_alojamiento as
+select
+T1.nombre as nombre_alojamiento,
+T2.actividad as Actividades_para_realizar,
+T3.caracteristica as Caracteristicas_sobresalientes
+from alojamientos T1
+inner join actividades T2
+on T1.actividades=T2.id_actividad
+inner join caracteristicas T3
+on T1.caracteristicas=T3.id_caracteristica;
+
+-- 5) Idiomas que son hablantes las personas
+create view idiomas_de_personas as
+select
+T1.nombre,
+T1.apellido,
+T2.idioma
+from personas T1
+inner join idiomas T2
+on T1.idioma=T2.id_idioma;
