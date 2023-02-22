@@ -1,6 +1,7 @@
 /*                   CURSO SQL                     */
 /*    PROYECTO: ALQUILER ONLINE DE INMUEBLES       */
 -- Descripción: Base de datos para alquilar alojamientos de forma online
+<<<<<<< HEAD
 -- ------------------------------------------------------------------------
 -- INDICE:
 -- 1) CREACIÓN DE BASE DE DATOS
@@ -13,6 +14,11 @@
 -- -------------------------------------------------------------------------
 /*                      CREACIÓN DE BASE DE DATOS                        */
 -- -------------------------------------------------------------------------
+=======
+-- ----------------------------------------------------
+/*          CREACIÓN DE BASE DE DATOS              */
+-- -----------------------------------------------------
+>>>>>>> e48545250cefdd1469edb44e38821b37e1ebc28d
 create schema if not exists alquileres;
 use alquileres;
 -- -------------------------------------------------------------------------------------------------------------------------
@@ -119,8 +125,12 @@ id_reserva int not null auto_increment primary key,
 persona int not null, -- Llave foranea que relaciona la reserva con la persona
 alojamiento int not null, -- Llave foranea que relaciona la reserva con el alojamiento
 checkin date not null, -- Fecha de entrada de la persona al alojamiento
+<<<<<<< HEAD
 checkout date not null,
 precio_dia numeric(6,2) not null, -- Fecha de salida de la persona del alojamiento
+=======
+checkout date not null, -- Fecha de salida de la persona del alojamiento
+>>>>>>> e48545250cefdd1469edb44e38821b37e1ebc28d
 foreign key (persona) references personas(id_persona),
 foreign key (alojamiento) references alojamientos(id_alojamiento)
 );
@@ -256,10 +266,17 @@ values
 (null,'Royal Home',2,1,11,1,1,1,4,3,3,2),
 (null,'Amaneceres',1,1,64,3,3,3,3,2,4,2);
 -- 12) Tabla Reservas
+<<<<<<< HEAD
 insert into reservas (id_reserva,persona,alojamiento,checkin,checkout,precio_dia)
 values
 (null,1,2,'2023-06-01','2023-06-15',150.00),
 (null,3,4,'2023-04-10','2023-05-10',325.20);
+=======
+insert into reservas (id_reserva,persona,alojamiento,checkin,checkout)
+values
+(null,1,2,'2023-06-01','2023-06-15'),
+(null,3,4,'2023-04-10','2023-05-10');
+>>>>>>> e48545250cefdd1469edb44e38821b37e1ebc28d
 -- 13) Tabla Medios
 insert into medios (id_medio,persona,cbu,alias_cbu,cvu,alias_cvu,n_tarjeta,cvc,fec_exp)
 values
@@ -286,7 +303,11 @@ T2.pais
 from
 personas T1
 inner join paises T2
+<<<<<<< HEAD
 on T1.pais=T2.id_pais;
+=======
+on T1.pais=T2.id_pais
+>>>>>>> e48545250cefdd1469edb44e38821b37e1ebc28d
 
 -- 2) DATOS DE CONTACTO DE PERSONAS CON RESERVAS 
 create view contacto_personas_con_reserva as
@@ -336,6 +357,7 @@ T2.idioma
 from personas T1
 inner join idiomas T2
 on T1.idioma=T2.id_idioma;
+<<<<<<< HEAD
 -- -------------------------------------------------------------------------------------------------------------------------
 /*                                           FUNCIONES PERSONALIZADAS                                                     */
 -- -------------------------------------------------------------------------------------------------------------------------
@@ -473,3 +495,5 @@ create trigger bitacora_reservas_eliminacion
 delete from reservas where id_reserva=3;
 select*from reservas;
 select*from bitacora_reservas_eliminacion;
+=======
+>>>>>>> e48545250cefdd1469edb44e38821b37e1ebc28d
